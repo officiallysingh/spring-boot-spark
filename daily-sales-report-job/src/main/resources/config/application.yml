@@ -1,0 +1,103 @@
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overridden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+#
+# Full reference for Standard Spring Boot properties is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+# set -Dspring.profiles.active=<dev|sit|int> as JVM argument to run in desired profile
+# If no profile is specified explicitly, application will fall back to default profile, which is "local"
+
+spring:
+  application:
+    name: daily-sales-report-job
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration
+
+  docker:
+    compose:
+      enabled: false
+
+  main:
+    log-startup-info: true
+  threads:
+    virtual:
+      enabled: true
+
+  #------------------------- MongoDB configuration -------------------------
+  data:
+    mongodb:
+      uri: ${MONGODB_URL:mongodb://localhost:27017}
+      database: ${MONGODB_DATABASE:sales_db}
+      auto-index-creation: false
+      uuid-representation: standard
+
+arangodb:
+  spring:
+    data:
+      hosts: ${ARANGODB_URL:localhost:8529}
+      user: ${ARANGODB_USER:root}
+      password: ${ARANGODB_PASSWORD:admin}
+      database: ${ARANGODB_DATABASE:products_db}
+
+logging:
+  level:
+    ROOT: info
+    '[org.mongodb.driver]': warn
+    '[org.apache.spark]': warn
+    '[org.apache.hadoop]': warn
+    '[org.sparkproject]': warn
+    '[com.mongodb.spark.sql.connector.read.partitioner.Partitioner]': warn
+debug: false
+
+# ===================================================================
+# Application specific properties
+# Add your own application properties here
+# ===================================================================
+
+#------------------------- Application configurations -------------------------
+ksoot:
+#  job:
+#    model-schema-key: ${MODEL_SCHEMA_KEY}
+  debug-log:
+    enabled: ${DEBUG_MODE:false}
+    dataset:
+      show: false
+      print-schema: false
+      dump:
+        enabled: ${DEBUG_DUMP_DATASET:false}
+        location: ${SPARK_OUTPUT_PATH:spark-output}/${CORRELATION_ID:0}
+      num-rows: 8
+  publish:
+    format: csv
+    path: ${SPARK_OUTPUT_PATH:spark-output}
+    save-mode: Overwrite
+    merge: false
+  connector:
+    mongo:
+      url: ${MONGODB_URL:mongodb://localhost:27017}
+      database: ${MONGO_FEATURE_DB:sales_db}
+    arango:
+      endpoints: ${ARANGODB_URL:localhost:8529}
+      database: ${ARANGODB_DATABASE:products_db}
+      username: ${ARANGODB_USER:root}
+      password: ${ARANGODB_PASSWORD:admin}
+      ssl-enabled: false
+      ssl-cert-value: ""
+      cursor-ttl: PT5M # 5 minutes, see the ISO 8601 standard for java.time.Duration String patterns
+
+#------------------------- Spark configurations -------------------------
+spark:
+  app.name: ${spring.application.name}
+  master: k8s://https://kubernetes.default.svc
+  driver:
+    memory: 2g
+    cores: 2
+  executor:
+    instances: 2
+    memory: 2g
+    cores: 2
+
+

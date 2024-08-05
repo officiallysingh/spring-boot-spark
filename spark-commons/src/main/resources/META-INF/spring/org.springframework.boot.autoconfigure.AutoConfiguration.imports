@@ -1,2 +1,2 @@
-com.ksoot.spark.common.SparkConfiguration
-com.ksoot.spark.common.SpringCloudTaskConfiguration
+com.ksoot.spark.common.conf.SparkConfiguration
+com.ksoot.spark.common.conf.SpringCloudTaskConfiguration

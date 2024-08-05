@@ -1,6 +1,12 @@
 package com.ksoot.spark.common;
 
+import java.time.format.DateTimeFormatter;
+
 public class JobConstants {
+
+  public static final String JOB_NAME_SPARK_STATEMENT_JOB = "spark-statement-job";
+  public static final String JOB_NAME_SPARK_WORD_COUNT_JOB = "spark-word-count-job";
+
   public static final String ID = "id";
   public static final String VALUE = "value";
 
@@ -20,7 +26,6 @@ public class JobConstants {
   public static final String UNDERSCORE = "_";
   public static final String DOT = ".";
 
-  public static final String BRACKET_WRAP_TEMPLATE = "(%s)";
-  public static final String JOB_NAME_SPARK_STATEMENT_JOB = "spark-statement-job";
-  public static final String JOB_NAME_SPARK_WORD_COUNT_JOB = "spark-word-count-job";
+  public static DateTimeFormatter DATE_TIME_FORMATTER =
+      DateTimeFormatter.ofPattern("yyyyMMdd_HHmmssSSS");
 }

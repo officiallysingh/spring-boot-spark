@@ -1,8 +1,6 @@
 package com.ksoot.spark.common;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +17,6 @@ public class ExecutionContext {
 
   public static ExecutionContext newInstance() {
     return new ExecutionContext(false);
-  }
-
-  public static ExecutionContext newInstance(final boolean threadSafe) {
-    return new ExecutionContext(threadSafe);
   }
 
   /**
