@@ -60,7 +60,7 @@ debug: false
 #------------------------- Application configurations -------------------------
 ksoot:
 #  job:
-#    model-schema-key: ${MODEL_SCHEMA_KEY}
+#    some-key: ${MODEL_SCHEMA_KEY}
   debug-log:
     enabled: ${DEBUG_MODE:false}
     dataset:
@@ -99,5 +99,7 @@ spark:
     instances: 2
     memory: 2g
     cores: 2
+  ui:
+    enabled: false
 
 

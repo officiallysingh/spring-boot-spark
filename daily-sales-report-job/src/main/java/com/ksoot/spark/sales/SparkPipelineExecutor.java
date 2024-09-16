@@ -4,7 +4,6 @@ import com.ksoot.spark.common.conf.SparkConnectorProperties;
 import com.ksoot.spark.common.dao.SparkMongoRepository;
 import com.ksoot.spark.common.executor.Executor;
 import com.ksoot.spark.common.executor.publish.JobOutput;
-import com.ksoot.spark.common.executor.publish.PublishExecutor;
 import com.ksoot.spark.sales.conf.JobProperties;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -34,13 +33,14 @@ public class SparkPipelineExecutor {
     log.info("Spark Pipeline Executor Started at: " + LocalDateTime.now());
     final StopWatch stopWatch = StopWatch.createStarted();
 
-    Dataset<Row> datatset = this.sparkMongoRepository.findAll(connectorProperties.getMongo().getDatabase(), "sales");
+    Dataset<Row> datatset =
+        this.sparkMongoRepository.findAll(connectorProperties.getMongo().getDatabase(), "sales");
     this.publishExecutor.execute(datatset);
 
     stopWatch.stop();
     log.info(
-            "Spark Pipeline Executor completed at: {} successfully. Time taken: {}",
-            LocalDateTime.now(),
-            stopWatch.formatTime());
+        "Spark Pipeline Executor completed at: {} successfully. Time taken: {}",
+        LocalDateTime.now(),
+        stopWatch.formatTime());
   }
 }

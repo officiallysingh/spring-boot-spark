@@ -44,7 +44,7 @@ public class PublishExecutor implements Executor<Dataset<Row>, JobOutput> {
         this.publishProperties.isMerge()
             ? result.coalesce(1) // Write to a single file
             : result;
-    logDataset("Spark Job Output", result, 1000);
+    logDataset("Spark Job Output", result);
 
     this.writeFile(result, this.publishProperties.getFormat(), outputLocation);
     log.info(

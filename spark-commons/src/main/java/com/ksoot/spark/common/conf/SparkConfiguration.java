@@ -8,13 +8,11 @@ import com.ksoot.spark.common.executor.publish.PublishExecutor;
 import com.ksoot.spark.common.executor.publish.PublishProperties;
 import com.ksoot.spark.common.logging.DebugLogAspect;
 import com.ksoot.spark.common.logging.DebugLogProperties;
+import com.mongodb.spark.sql.connector.MongoCatalog;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import com.mongodb.spark.sql.connector.MongoCatalog;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -93,6 +91,7 @@ class SparkConfiguration {
               UserDefinedFunctions.FIRST_VECTOR_ELEMENT,
               UserDefinedFunctions.firstVectorElement,
               DataTypes.DoubleType);
+      //      sparkSession.stop();
       return sparkSession;
     }
   }
@@ -107,7 +106,7 @@ class SparkConfiguration {
     }
 
     @Bean
-    @ConfigurationProperties("telos.debug-log")
+    @ConfigurationProperties("ksoot.debug-log")
     DebugLogProperties debugLogProperties() {
       return new DebugLogProperties();
     }
@@ -145,11 +144,11 @@ class SparkConfiguration {
 
     @Bean
     SparkMongoRepository sparkMongoRepository(
-            final SparkSession sparkSession, final SparkConnectorProperties sparkConnectorProperties) {
+        final SparkSession sparkSession, final SparkConnectorProperties sparkConnectorProperties) {
       log.info(
-              "MongoDB Configurations >> Url: {}, Database: {}",
-              sparkConnectorProperties.getMongo().getUrl(),
-              sparkConnectorProperties.getMongo().getDatabase());
+          "MongoDB Configurations >> Url: {}, Database: {}",
+          sparkConnectorProperties.getMongo().getUrl(),
+          sparkConnectorProperties.getMongo().getDatabase());
       return new SparkMongoRepository(sparkSession, sparkConnectorProperties);
     }
   }
@@ -159,12 +158,12 @@ class SparkConfiguration {
 
     @Bean
     SparkArangoRepository sparkArangoRepository(
-            final SparkSession sparkSession, final SparkConnectorProperties sparkConnectorProperties) {
+        final SparkSession sparkSession, final SparkConnectorProperties sparkConnectorProperties) {
       log.info(
-              "ArangoDB Configurations >> Endpoints: {}, Database: {}, Username: {}",
-              sparkConnectorProperties.getArango().endpoints(),
-              sparkConnectorProperties.getArango().getDatabase(),
-              sparkConnectorProperties.getArango().getUsername());
+          "ArangoDB Configurations >> Endpoints: {}, Database: {}, Username: {}",
+          sparkConnectorProperties.getArango().endpoints(),
+          sparkConnectorProperties.getArango().getDatabase(),
+          sparkConnectorProperties.getArango().getUsername());
       return new SparkArangoRepository(sparkSession, sparkConnectorProperties);
     }
   }

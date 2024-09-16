@@ -59,12 +59,13 @@ public class SparkUtils {
   public static void logDataset(
       final String datasetName, final Dataset<Row> dataset, final int numRows) {
     if (Objects.nonNull(dataset)) {
-      log.debug("----------- Dataset: {} -----------", datasetName);
-      dataset.printSchema();
+      log.info("----------- Dataset: {} -----------", datasetName);
+      final String schema = dataset.schema().treeString();
+      log.info("\n" + schema);
       dataset.show(numRows, false);
-      log.debug("..................................................");
+      log.info("..................................................");
     } else {
-      log.debug("----------- Dataset: {} is null -----------", datasetName);
+      log.info("----------- Dataset: {} is null -----------", datasetName);
     }
   }
 }

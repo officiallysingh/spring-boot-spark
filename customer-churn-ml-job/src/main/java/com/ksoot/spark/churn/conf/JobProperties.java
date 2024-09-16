@@ -12,5 +12,5 @@ import org.springframework.validation.annotation.Validated;
 @NoArgsConstructor
 @ToString
 @Validated
-@ConfigurationProperties(prefix = "application.job")
+@ConfigurationProperties(prefix = "ksoot.job")
 public class JobProperties {}

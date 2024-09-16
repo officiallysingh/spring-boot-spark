@@ -22,8 +22,7 @@ public class DailySalesReportJob {
     SpringApplication.run(DailySalesReportJob.class, args);
   }
 
-  @Autowired
-  private DataPopulator dataPopulator;
+  @Autowired private DataPopulator dataPopulator;
 
   @PostConstruct
   public void init() {

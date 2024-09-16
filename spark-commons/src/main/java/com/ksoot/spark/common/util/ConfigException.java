@@ -6,6 +6,7 @@ package com.ksoot.spark.common.util;
  * @since 1.0
  */
 public class ConfigException extends RuntimeException {
+
   /** The serial version ID. */
   private static final long serialVersionUID = -7838702245512140996L;
 

@@ -8,7 +8,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.ksoot.spark</groupId>
+<!--    <groupId>com.ksoot.spark</groupId>-->
     <artifactId>daily-sales-report-job</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>spark-statement-job</name>
@@ -16,18 +16,6 @@
 
     <!--    <properties>-->
     <!--    </properties>-->
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <!-- Spring Dependencies -->
@@ -69,10 +57,6 @@
         <dependency>
             <groupId>com.arangodb</groupId>
             <artifactId>arangodb-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
 
         <!-- Spark Dependencies -->
@@ -124,7 +108,6 @@
         <dependency>
             <groupId>org.mongodb.spark</groupId>
             <artifactId>mongo-spark-connector_${scala.compact.version}</artifactId>
-            <version>${mongodb-spark-datasource.version}</version>
         </dependency>
         <dependency>
             <groupId>com.arangodb</groupId>

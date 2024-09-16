@@ -1,16 +1,11 @@
 package com.ksoot.spark.sales;
 
-//import static com.ksoot.batch.utils.DateTimeUtils.ZONE_ID_IST;
-//import static com.ksoot.batch.utils.DateTimeUtils.ZONE_OFFSET_IST;
+import static com.ksoot.spark.common.util.DateTimeUtils.ZONE_ID_IST;
 
-import com.arangodb.ArangoDB;
-import com.arangodb.entity.CollectionEntity;
 import com.arangodb.springframework.core.ArangoOperations;
 import com.mongodb.client.MongoCollection;
-
 import java.time.*;
 import java.util.*;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,17 +20,16 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.stereotype.Component;
 
-import static com.ksoot.spark.common.util.DateTimeUtils.ZONE_ID_IST;
-
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class DataPopulator {
 
   private static final Faker faker =
-          new Faker(new Locale.Builder().setLanguage("en").setRegion("US").build());
-  private static final String[] products = {"1001", "1002", "1003", "1004", "1005",
-          "1006", "1007", "1008", "1009", "1010"};
+      new Faker(new Locale.Builder().setLanguage("en").setRegion("US").build());
+  private static final String[] products = {
+    "1001", "1002", "1003", "1004", "1005", "1006", "1007", "1008", "1009", "1010"
+  };
 
   // Total number of Credit card accounts to be created
   // For each account upto 10 transactions are created for each day of last 3 months
@@ -48,7 +42,6 @@ public class DataPopulator {
   private final MongoOperations mongoOperations;
 
   private static final String PRODUCTS_COLLECTION = "products";
-  private ArangoDB arangoDB;
   private final ArangoOperations arangoOperations;
 
   public void populateData() {
@@ -61,22 +54,21 @@ public class DataPopulator {
     log.info("Creating Products data");
     if (this.arangoOperations.collection(PRODUCTS_COLLECTION).count() > 0) {
       log.info("Data already exists: {}", PRODUCTS_COLLECTION);
-      return;
+    } else {
+      this.arangoOperations.insert(Product.of("1001", "TV"));
+      this.arangoOperations.insert(Product.of("1002", "Mobile"));
+      this.arangoOperations.insert(Product.of("1003", "Table"));
+      this.arangoOperations.insert(Product.of("1004", "Chair"));
+      this.arangoOperations.insert(Product.of("1005", "Sofa"));
+      this.arangoOperations.insert(Product.of("1006", "AC"));
+      this.arangoOperations.insert(Product.of("1007", "Bed"));
+      this.arangoOperations.insert(Product.of("1008", "Charger"));
+      this.arangoOperations.insert(Product.of("1009", "Laptop"));
+      this.arangoOperations.insert(Product.of("1010", "Tablet"));
+      log.info("Created Products data");
     }
-
-    this.arangoOperations.insert(Product.of("1001", "TV"));
-    this.arangoOperations.insert(Product.of("1002", "Mobile"));
-    this.arangoOperations.insert(Product.of("1003", "Table"));
-    this.arangoOperations.insert(Product.of("1004", "Chair"));
-    this.arangoOperations.insert(Product.of("1005", "Sofa"));
-    this.arangoOperations.insert(Product.of("1006", "AC"));
-    this.arangoOperations.insert(Product.of("1007", "Bed"));
-    this.arangoOperations.insert(Product.of("1008", "Charger"));
-    this.arangoOperations.insert(Product.of("1009", "Laptop"));
-    this.arangoOperations.insert(Product.of("1010", "Tablet"));
-    log.info("Created Products data");
+    this.arangoOperations.driver().shutdown();
   }
-
 
   private void createSalesSchema() {
     log.info("Creating Sales collection Schema");
@@ -102,8 +94,8 @@ public class DataPopulator {
 
     final YearMonth currentMonth = YearMonth.now(ZONE_ID_IST);
     final List<YearMonth> months =
-            List.of(
-                    currentMonth.minusMonths(3), currentMonth.minusMonths(2), currentMonth.minusMonths(1));
+        List.of(
+            currentMonth.minusMonths(3), currentMonth.minusMonths(2), currentMonth.minusMonths(1));
     int recordCount = 0;
     final List<Document> sales = new ArrayList<>(BATCH_SIZE);
     for (int i = 1; i <= SALES_COUNT; i++) {
@@ -124,20 +116,17 @@ public class DataPopulator {
 
             final Document sale = new Document("_id", new ObjectId());
             sale.append("transaction_id", transactionId)
-                    .append("timestamp", timestamp)
-                    .append("product_id", productId)
-                    .append("quantity", quantity)
-                    .append("price", price);
+                .append("timestamp", timestamp)
+                .append("product_id", productId)
+                .append("quantity", quantity)
+                .append("price", price);
             sales.add(sale);
 
             recordCount++;
             if (recordCount % BATCH_SIZE == 0) {
               salesCollection.insertMany(sales);
               sales.clear();
-              log.info(
-                  "Created {} Sales transactions, processed for date: {}",
-                  recordCount,
-                  date);
+              log.info("Created {} Sales transactions, processed for date: {}", recordCount, date);
             }
           }
         }
@@ -156,8 +145,7 @@ public class DataPopulator {
   @com.arangodb.springframework.annotation.Document("products")
   static class Product {
 
-    @Id
-    private String id;
+    @Id private String id;
 
     private String name;
   }
