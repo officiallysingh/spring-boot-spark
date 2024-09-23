@@ -28,6 +28,8 @@ import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.task.repository.TaskExecution;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.*;
@@ -165,6 +167,15 @@ class SparkConfiguration {
           sparkConnectorProperties.getArango().getDatabase(),
           sparkConnectorProperties.getArango().getUsername());
       return new SparkArangoRepository(sparkSession, sparkConnectorProperties);
+    }
+  }
+
+  @ConditionalOnClass(TaskExecution.class)
+  static class JobExecutionListenerConfiguration {
+
+    @Bean
+    JobExecutionListener jobExecutionListener(final MessageSource messageSource) {
+      return new JobExecutionListener(messageSource);
     }
   }
 }
