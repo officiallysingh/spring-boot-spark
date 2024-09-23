@@ -24,7 +24,7 @@ public class JobExecutionListener {
   @BeforeTask
   public void onJobStart(final TaskExecution taskExecution) {
     log.info(
-        "Task: {} with  executionId: {} started at: {} with arguments: {}",
+        "Job: {} with  executionId: {} started at: {} with arguments: {}",
         taskExecution.getTaskName(),
         taskExecution.getExecutionId(),
         taskExecution.getStartTime(),
@@ -38,7 +38,7 @@ public class JobExecutionListener {
           DurationRepresentation.of(
               Duration.between(taskExecution.getStartTime(), taskExecution.getEndTime()));
       log.info(
-          "Task: {} with executionId: {} completed at: {} with exitCode: {} and exitMessage: {}. "
+          "Job: {} with executionId: {} completed successfully at: {} with exitCode: {} and exitMessage: {}. "
               + "Total time taken: {}",
           taskExecution.getTaskName(),
           taskExecution.getExecutionId(),
@@ -78,7 +78,7 @@ public class JobExecutionListener {
     final String title = this.getMessage("title." + code, defaultTitle);
     final String message = this.getMessage("message." + code, defaultMessage, args);
 
-    log.error("Code: {}, Title: {}, Message: {}", code, title, message);
+    log.error("Spark Exception[ Code: {}, Title: {}, Message: {} ]", code, title, message);
   }
 
   private String getMessage(final String messageCode, final String defaultMessage) {
