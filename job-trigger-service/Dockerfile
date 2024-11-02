@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
 ARG java_image_tag=17-jammy
 FROM eclipse-temurin:${java_image_tag}
 
@@ -76,14 +76,13 @@ RUN set -ex; \
 
 ENV SPARK_HOME /opt/spark
 
-ADD target/daily-sales-report-job-*.jar $SPARK_JOB_APPS_DIR/daily-sales-report-job.jar
+EXPOSE 8090
 
-WORKDIR /opt/spark/work-dir
+ADD target/job-trigger-service-*.jar app.jar
+ADD spark-job-submit.sh $SPARK_HOME/bin/spark-job-submit.sh
+RUN chmod +x $SPARK_HOME/bin/spark-job-submit.sh
 
-RUN chmod g+w /opt/spark/work-dir
-RUN chmod a+x /opt/decom.sh
-
-ENTRYPOINT [ "/opt/entrypoint.sh" ]
+ENTRYPOINT ["java","-jar","/app.jar"]
 
 # Specify the User that the actual main process will run as
 USER ${spark_uid}

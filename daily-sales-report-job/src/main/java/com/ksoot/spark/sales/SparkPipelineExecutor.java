@@ -2,7 +2,6 @@ package com.ksoot.spark.sales;
 
 import com.ksoot.spark.common.conf.SparkConnectorProperties;
 import com.ksoot.spark.common.dao.SparkMongoRepository;
-import com.ksoot.spark.common.error.SparkProblem;
 import com.ksoot.spark.common.executor.Executor;
 import com.ksoot.spark.common.executor.publish.JobOutput;
 import com.ksoot.spark.sales.conf.JobProperties;
@@ -12,8 +11,6 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 
 @Component
 @Slf4j
@@ -39,17 +36,17 @@ public class SparkPipelineExecutor {
     // "sales");
     //    this.publishExecutor.execute(datatset);
 
-//    throw SparkProblem.of("Just for testing: arg: {0}")
-//        .cause(new IllegalStateException("Testing state"))
-//        .args("Singh")
-//        .build();
+    //    throw SparkProblem.of("Just for testing: arg: {0}")
+    //        .cause(new IllegalStateException("Testing state"))
+    //        .args("Singh")
+    //        .build();
 
-//    SparkProblem.of(SalesJobErrors.INVALID_DATE).build();
-//    throw SparkProblem.of("Some exception").build();
-        throw SparkProblem.of(SalesJobErrors.INVALID_DATE)
-//            .cause(new IllegalStateException("Testing state"))
-//            .args(LocalDateTime.now().plusDays(3), "param2")
-            .build();
+    //    SparkProblem.of(SalesJobErrors.INVALID_DATE).build();
+    //    throw SparkProblem.of("Some exception").build();
+    throw SparkProblem.of(SalesJobErrors.INVALID_DATE)
+        //            .cause(new IllegalStateException("Testing state"))
+        //            .args(LocalDateTime.now().plusDays(3), "param2")
+        .build();
 
     //    Assert.hasText("", "This value can not be null or empty");
 

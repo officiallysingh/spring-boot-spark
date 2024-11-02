@@ -76,7 +76,7 @@ RUN set -ex; \
 
 ENV SPARK_HOME /opt/spark
 
-ADD target/daily-sales-report-job-*.jar $SPARK_JOB_APPS_DIR/daily-sales-report-job.jar
+ADD target/logs-analysis-job-*.jar $SPARK_JOB_APPS_DIR/logs-analysis-job.jar
 
 WORKDIR /opt/spark/work-dir
 
