@@ -1,6 +1,10 @@
 package com.ksoot.spark.common.util;
 
+import static com.ksoot.spark.common.JobConstants.BACKTICK;
+
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
@@ -13,6 +17,8 @@ import org.springframework.util.Assert;
 @Slf4j
 @UtilityClass
 public class SparkUtils {
+
+  private static final String REGEX_CONTAINS_SLASH = "(/[^\\s/]+(/[\\w]+)*)";
 
   public static Column toSparkColumn(final String columnName) {
     Assert.hasText(columnName, "columnName is required");
@@ -49,44 +55,21 @@ public class SparkUtils {
     return Arrays.stream(dataset.columns()).noneMatch(col -> col.equals(columnName));
   }
 
-  //  public void assertNotEmpty(@Nullable final String text, final String message) {
-  //    if (!StringUtils.hasText(text)) {
-  //      throw SparkProblem.badRequest(message);
-  //    }
-  //  }
-  //
-  //  public void assertNotNull(@Nullable Object object, String message) {
-  //    if (Objects.isNull(object)) {
-  //      throw SparkProblem.badRequest(message);
-  //    }
-  //  }
-  //
-  //  public void assertState(@Nullable boolean state, String message) {
-  //    if (!state) {
-  //      throw SparkProblem.badRequest(message);
-  //    }
-  //  }
-  //
-  //  public void assertNotEmpty(@Nullable final Object[] array, final String message) {
-  //    if (ArrayUtils.isEmpty(array)) {
-  //      throw SparkProblem.badRequest(message);
-  //    }
-  //  }
-  //
-  //  public void assertNotEmpty(@Nullable final Map<?, ?> map, final String message) {
-  //    if (MapUtils.isEmpty(map)) {
-  //      throw SparkProblem.badRequest(message);
-  //    }
-  //  }
-  //
-  //  public void assertNotEmpty(@Nullable final Collection<?> collection, final String message) {
-  //    if (CollectionUtils.isEmpty(collection)) {
-  //      throw SparkProblem.badRequest(message);
-  //    }
-  //  }
+  public static String backtickWrapColumnNamesIfContainsSlash(final String expression) {
+    Assert.hasText(expression, "expression is required");
+    Pattern pattern = Pattern.compile(REGEX_CONTAINS_SLASH);
+    Matcher matcher = pattern.matcher(expression);
+    StringBuilder newExpression = new StringBuilder();
+    while (matcher.find()) {
+      String columnName = matcher.group(1);
+      matcher.appendReplacement(newExpression, BACKTICK + columnName + BACKTICK);
+    }
+    matcher.appendTail(newExpression);
+    return newExpression.toString();
+  }
 
   public static void logDataset(final String datasetName, final Dataset<Row> dataset) {
-    logDataset(datasetName, dataset, 20);
+    logDataset(datasetName, dataset, 8);
   }
 
   public static void logDataset(

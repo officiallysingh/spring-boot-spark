@@ -5,8 +5,6 @@ import static com.ksoot.spark.common.util.SparkUtils.logDataset;
 
 import com.ksoot.spark.common.JobConstants;
 import com.ksoot.spark.common.executor.Executor;
-import com.ksoot.spark.common.logging.annotation.DebugLog;
-import com.ksoot.spark.common.logging.annotation.LogVar;
 import com.ksoot.spark.common.util.SparkOptions;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -26,11 +24,6 @@ public class PublishExecutor implements Executor<Dataset<Row>, JobOutput> {
 
   private final PublishProperties publishProperties;
 
-  @DebugLog(
-      values = {
-        @LogVar(name = "Publish input Dataset", value = "#request.dataset"),
-        @LogVar(name = "jobOutput", value = "#result")
-      })
   public JobOutput execute(final Dataset<Row> dataset) {
     Dataset<Row> result = dataset;
 

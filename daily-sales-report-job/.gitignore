@@ -2,9 +2,8 @@ logs/
 **/*.log
 *.log
 
-/src/main/resources/config/application-local.yml
-/spark-output/
-**/spark-export/
+/spark-space/
+**/spark-space/
 /spark-warehouse/
 **/spark-warehouse/
 

@@ -17,10 +17,18 @@ public class SparkOptions {
   public static final class Common {
     public static final String HEADER = "header"; // inferSchema",
     public static final String INFER_SCHEMA = "inferSchema";
+    public static final String PATH = "path";
+    public static final String FORMAT = "format";
+    public static final String CHECKPOINT_LOCATION = "checkpointLocation";
   }
 
   public static final class CSV {
     public static final String FORMAT = "csv";
+  }
+
+  public static final class Json {
+    public static final String FORMAT = "json";
+    public static final String MULTILINE = "multiline";
   }
 
   public static final class Parquet {
@@ -65,6 +73,15 @@ public class SparkOptions {
     public static final String CURSOR_TIME_TO_LIVE = "ttl";
   }
 
+  public static final class Jdbc {
+    public static final String FORMAT = "jdbc";
+    public static final String URL = "url";
+    public static final String DRIVER = "driver";
+    public static final String TABLE = "dbtable";
+    public static final String USER = "user";
+    public static final String PASSWORD = "password";
+  }
+
   public static final class Join {
     public static final String INNER = "inner";
     public static final String FULL = "full";
@@ -78,15 +95,10 @@ public class SparkOptions {
     public static final String CROSS = "cross";
   }
 
-  //  public static final class ImputeStrategy {
-  //    public static final String MEAN = "mean";
-  //    public static final String MEDIAN = "median";
-  //    public static final String MODE = "mode";
-  //  }
-  //
-  //  public static final class AggregationStrategy {
-  //    public static final String MIN = "min";
-  //    public static final String MAX = "max";
-  //    public static final String MODE = "mode";
-  //  }
+  public static final class Kafka {
+    public static final String FORMAT = "kafka";
+    public static final String KAFKA_BOOTSTRAP_SERVERS = "kafka.bootstrap.servers";
+    public static final String STARTING_OFFSETS = "startingOffsets";
+    public static final String SUBSCRIBE = "subscribe";
+  }
 }

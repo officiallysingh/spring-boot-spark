@@ -2,9 +2,8 @@ logs/
 **/*.log
 *.log
 
-/spark-output/
-**/spark-output/
-**/spark-export/
+/spark-space/
+**/spark-space/
 /spark-warehouse/
 **/spark-warehouse/
 
