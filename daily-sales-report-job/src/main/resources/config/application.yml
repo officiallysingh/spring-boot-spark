@@ -61,20 +61,6 @@ debug: false
 ksoot:
 #  job:
 #    some-key: ${MODEL_SCHEMA_KEY}
-  debug-log:
-    enabled: ${DEBUG_MODE:false}
-    dataset:
-      show: false
-      print-schema: false
-      dump:
-        enabled: ${DEBUG_DUMP_DATASET:false}
-        location: ${SPARK_OUTPUT_PATH:spark-output}/${CORRELATION_ID:0}
-      num-rows: 8
-  publish:
-    format: csv
-    path: ${SPARK_OUTPUT_PATH:spark-output}
-    save-mode: Overwrite
-    merge: false
   connector:
     mongo:
       url: ${MONGODB_URL:mongodb://localhost:27017}

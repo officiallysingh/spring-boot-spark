@@ -1,4 +1,4 @@
-package com.ksoot.spark.common.conf;
+package com.ksoot.spark.common.config;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;

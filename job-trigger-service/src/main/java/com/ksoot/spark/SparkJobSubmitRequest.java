@@ -1,7 +1,7 @@
 package com.ksoot.spark;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ksoot.spark.common.JobConstants;
+import com.ksoot.spark.common.util.JobConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -17,8 +17,8 @@ public class SparkJobSubmitRequest {
 
   @Schema(
       description = "Spark Job name, must be present in application.yml spark-submit.jobs",
-      example = "spark-statement-job",
-      defaultValue = "spark-statement-job",
+      example = "daily-sales-report-job",
+      defaultValue = "daily-sales-report-job",
       hidden = true)
   @JsonIgnore
   @NotEmpty

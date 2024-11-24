@@ -1,7 +1,8 @@
 package com.ksoot.spark.common.error;
 
-import static ai.mlhub.platform.job.common.error.JobErrorType.BAD_REQUEST_TITLE;
+import static com.ksoot.spark.common.error.JobErrorType.BAD_REQUEST_TITLE;
 
+import com.ksoot.spark.common.util.StringUtils;
 import jakarta.annotation.Nullable;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
@@ -35,7 +36,7 @@ public class JobProblem extends NestedRuntimeException {
       final String message,
       final Throwable cause,
       final Object[] args) {
-    return ai.mlhub.platform.job.common.util.StringUtils.substitute(
+    return StringUtils.substitute(
         REASON_TEMPLATE,
         "code",
         code,

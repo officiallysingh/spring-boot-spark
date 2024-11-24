@@ -1,5 +1,7 @@
 package com.ksoot.spark.sales;
 
+import com.ksoot.spark.common.error.ErrorType;
+
 public enum SalesJobErrors implements ErrorType {
   INVALID_DATE(
       "dailysalesjob.invalid.date", "Invalid Request", "Job date: {0}, {1} can not be in future");

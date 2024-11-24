@@ -1,4 +1,4 @@
-package com.ksoot.spark.common;
+package com.ksoot.spark.common.util;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

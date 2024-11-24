@@ -1,7 +1,7 @@
 package com.ksoot.spark.sales;
 
-import com.ksoot.spark.common.conf.SparkConnectorProperties;
-import com.ksoot.spark.common.dao.SparkMongoRepository;
+import com.ksoot.spark.common.config.SparkConnectorConfiguration;
+import com.ksoot.spark.common.connector.dao.SparkMongoRepository;
 import com.ksoot.spark.common.executor.Executor;
 import com.ksoot.spark.common.executor.publish.JobOutput;
 import com.ksoot.spark.sales.conf.JobProperties;
@@ -21,7 +21,7 @@ public class SparkPipelineExecutor {
 
   private final JobProperties jobProperties;
 
-  private final SparkConnectorProperties connectorProperties;
+  private final SparkConnectorConfiguration connectorProperties;
 
   private final Executor<Dataset<Row>, JobOutput> publishExecutor;
 

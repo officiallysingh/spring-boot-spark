@@ -1,4 +1,4 @@
-package com.ksoot.spark.common.conf;
+package com.ksoot.spark.common.config;
 
 import static org.apache.spark.sql.functions.callUDF;
 

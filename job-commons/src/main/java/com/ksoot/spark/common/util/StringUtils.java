@@ -1,6 +1,6 @@
 package com.ksoot.spark.common.util;
 
-import static com.ksoot.spark.common.JobConstants.*;
+import static com.ksoot.spark.common.util.JobConstants.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.util.Arrays;

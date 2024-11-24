@@ -1,7 +1,7 @@
 package com.ksoot.spark.common.util;
 
-import static ai.mlhub.platform.job.common.JobConstants.BACKTICK;
-import static ai.mlhub.platform.job.common.JobConstants.DOT;
+import static com.ksoot.spark.common.util.JobConstants.BACKTICK;
+import static com.ksoot.spark.common.util.JobConstants.DOT;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,21 +17,21 @@ import org.apache.spark.sql.types.StructType;
 public class SparkJsonUtils {
 
   public static Dataset<Row> flattenJsonData(Dataset<Row> rawData) {
-    List<String> flatColumns = new ArrayList<>();
+    List<String> flattenedColumns = new ArrayList<>();
 
     for (StructField structField : rawData.schema().fields()) {
       String fieldName = structField.name();
 
       if (structField.dataType() instanceof StructType) {
-        flattenNestedJson(structField, flatColumns, fieldName);
+        flattenNestedJson(structField, flattenedColumns, fieldName);
       } else if (structField.dataType() instanceof ArrayType) {
         rawData = rawData.withColumn(fieldName, functions.explode(rawData.col(fieldName)));
-        flattenJsonArray(structField, flatColumns, fieldName);
+        flattenJsonArray(structField, flattenedColumns, fieldName);
       } else {
-        flatColumns.add(fieldName);
+        flattenedColumns.add(fieldName);
       }
     }
-    rawData = rawData.selectExpr(flatColumns.toArray(new String[0]));
+    rawData = rawData.selectExpr(flattenedColumns.toArray(new String[0]));
     return rawData;
   }
 
@@ -39,7 +39,7 @@ public class SparkJsonUtils {
       StructField structField, List<String> flatColumns, String fieldName) {
     if (structField.dataType() instanceof StructType nestedStruct) {
 
-        for (StructField nestedField : nestedStruct.fields()) {
+      for (StructField nestedField : nestedStruct.fields()) {
         String nestedFieldName = fieldName + "." + nestedField.name();
         if (nestedField.dataType() instanceof StructType) {
           flattenNestedJson(nestedField, flatColumns, nestedFieldName);
@@ -59,7 +59,7 @@ public class SparkJsonUtils {
       StructField structField, List<String> flatColumns, String fieldName) {
     ArrayType arrayType = (ArrayType) structField.dataType();
     if (arrayType.elementType() instanceof StructType nestedStruct) {
-        for (StructField nestedField : nestedStruct.fields()) {
+      for (StructField nestedField : nestedStruct.fields()) {
         String nestedFieldName = fieldName + DOT + nestedField.name();
         flatColumns.add(nestedFieldName + " AS " + StringUtils.wrap(nestedFieldName, BACKTICK));
       }

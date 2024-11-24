@@ -1,5 +1,7 @@
-package com.ksoot.spark.common.conf;
+package com.ksoot.spark.common.config;
 
+import com.ksoot.spark.common.error.JobErrorType;
+import com.ksoot.spark.common.error.JobProblem;
 import com.ksoot.spark.common.util.DurationRepresentation;
 import java.time.Duration;
 import java.util.Locale;
@@ -22,9 +24,10 @@ public class JobExecutionListener {
   @BeforeTask
   public void onJobStart(final TaskExecution taskExecution) {
     log.info(
-        "Job: {} with  executionId: {} started at: {} with arguments: {}",
+        "Job: {} with executionId: {} and externalExecutionId: {} started at: {} with arguments: {}",
         taskExecution.getTaskName(),
         taskExecution.getExecutionId(),
+        taskExecution.getExternalExecutionId(),
         taskExecution.getStartTime(),
         taskExecution.getArguments());
   }
@@ -36,10 +39,11 @@ public class JobExecutionListener {
           DurationRepresentation.of(
               Duration.between(taskExecution.getStartTime(), taskExecution.getEndTime()));
       log.info(
-          "Job: {} with executionId: {} completed successfully at: {} with exitCode: {} and exitMessage: {}. "
+          "Job: {} with executionId: {} and externalExecutionId: {} completed successfully at: {} with exitCode: {} and exitMessage: {}. "
               + "Total time taken: {}",
           taskExecution.getTaskName(),
           taskExecution.getExecutionId(),
+          taskExecution.getExternalExecutionId(),
           taskExecution.getEndTime(),
           taskExecution.getExitCode(),
           taskExecution.getExitMessage(),
@@ -53,25 +57,26 @@ public class JobExecutionListener {
         DurationRepresentation.of(
             Duration.between(taskExecution.getStartTime(), taskExecution.getEndTime()));
     log.error(
-        "Task: {} with executionId: {} failed at: {} with exitCode: {} and exitMessage: {}. "
+        "Task: {} with executionId: {} and externalExecutionId: {} failed at: {} with exitCode: {} and exitMessage: {}. "
             + "Total time taken: {}",
         taskExecution.getTaskName(),
         taskExecution.getExecutionId(),
+        taskExecution.getExternalExecutionId(),
         taskExecution.getEndTime(),
         taskExecution.getExitCode(),
         taskExecution.getExitMessage(),
         duration);
-    SparkProblem sparkProblem;
-    if (throwable instanceof SparkProblem e) {
-      sparkProblem = e;
+    JobProblem jobProblem;
+    if (throwable instanceof JobProblem e) {
+      jobProblem = e;
     } else {
-      sparkProblem = SparkProblem.of(SparkError.unknown()).cause(throwable).build();
+      jobProblem = JobProblem.of(JobErrorType.unknown()).cause(throwable).build();
     }
 
-    final String code = sparkProblem.getErrorType().code();
-    final String defaultTitle = sparkProblem.getErrorType().title();
-    final String defaultMessage = sparkProblem.getErrorType().message();
-    final Object[] args = sparkProblem.getArgs();
+    final String code = jobProblem.getErrorType().code();
+    final String defaultTitle = jobProblem.getErrorType().title();
+    final String defaultMessage = jobProblem.getErrorType().message();
+    final Object[] args = jobProblem.getArgs();
 
     final String title = this.getMessage("title." + code, defaultTitle);
     final String message = this.getMessage("message." + code, defaultMessage, args);

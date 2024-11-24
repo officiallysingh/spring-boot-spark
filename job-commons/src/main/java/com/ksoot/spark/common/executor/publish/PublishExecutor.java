@@ -1,10 +1,10 @@
 package com.ksoot.spark.common.executor.publish;
 
-import static com.ksoot.spark.common.JobConstants.*;
+import static com.ksoot.spark.common.util.JobConstants.*;
 import static com.ksoot.spark.common.util.SparkUtils.logDataset;
 
-import com.ksoot.spark.common.JobConstants;
 import com.ksoot.spark.common.executor.Executor;
+import com.ksoot.spark.common.util.JobConstants;
 import com.ksoot.spark.common.util.SparkOptions;
 import java.io.IOException;
 import java.io.UncheckedIOException;

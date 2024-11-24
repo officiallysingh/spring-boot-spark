@@ -1,4 +1,4 @@
-package com.ksoot.spark.common;
+package com.ksoot.spark.common.util;
 
 import java.time.format.DateTimeFormatter;
 

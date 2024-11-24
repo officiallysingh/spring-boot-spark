@@ -1,7 +1,7 @@
-package com.ksoot.spark.common.conf;
+package com.ksoot.spark.common.config;
 
-import com.ksoot.spark.common.dao.SparkArangoRepository;
-import com.ksoot.spark.common.dao.SparkMongoRepository;
+import com.ksoot.spark.common.connector.dao.SparkArangoRepository;
+import com.ksoot.spark.common.connector.dao.SparkMongoRepository;
 import com.ksoot.spark.common.executor.Executor;
 import com.ksoot.spark.common.executor.publish.JobOutput;
 import com.ksoot.spark.common.executor.publish.PublishExecutor;
@@ -69,8 +69,8 @@ class SparkConfiguration {
 
     @Bean
     @ConfigurationProperties("ksoot.connector")
-    SparkConnectorProperties sparkConnectorProperties() {
-      return new SparkConnectorProperties();
+    SparkConnectorConfiguration sparkConnectorProperties() {
+      return new SparkConnectorConfiguration();
     }
 
     @Bean(name = "sparkSession", destroyMethod = "stop")
@@ -117,35 +117,6 @@ class SparkConfiguration {
     @Bean
     Executor<Dataset<Row>, JobOutput> publishExecutor(final PublishProperties publishProperties) {
       return new PublishExecutor(publishProperties);
-    }
-  }
-
-  @ConditionalOnClass(MongoCatalog.class)
-  static class MongoConnectorConfiguration {
-
-    @Bean
-    SparkMongoRepository sparkMongoRepository(
-        final SparkSession sparkSession, final SparkConnectorProperties sparkConnectorProperties) {
-      log.info(
-          "MongoDB Configurations >> Url: {}, Database: {}",
-          sparkConnectorProperties.getMongo().getUrl(),
-          sparkConnectorProperties.getMongo().getDatabase());
-      return new SparkMongoRepository(sparkSession, sparkConnectorProperties);
-    }
-  }
-
-  @ConditionalOnClass(ArangoTable.class)
-  static class ArangoConnectorConfiguration {
-
-    @Bean
-    SparkArangoRepository sparkArangoRepository(
-        final SparkSession sparkSession, final SparkConnectorProperties sparkConnectorProperties) {
-      log.info(
-          "ArangoDB Configurations >> Endpoints: {}, Database: {}, Username: {}",
-          sparkConnectorProperties.getArango().endpoints(),
-          sparkConnectorProperties.getArango().getDatabase(),
-          sparkConnectorProperties.getArango().getUsername());
-      return new SparkArangoRepository(sparkSession, sparkConnectorProperties);
     }
   }
 

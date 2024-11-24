@@ -1,6 +1,6 @@
 package com.ksoot.spark.common.util;
 
-import static com.ksoot.spark.common.JobConstants.BACKTICK;
+import static com.ksoot.spark.common.util.JobConstants.BACKTICK;
 
 import java.util.*;
 import java.util.regex.Matcher;
