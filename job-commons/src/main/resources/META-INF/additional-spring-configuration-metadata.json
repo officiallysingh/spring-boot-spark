@@ -1,232 +1,117 @@
 {
   "properties": [
     {
-      "name": "ksoot.connector.reader.type",
-      "type": "java.lang.String",
-      "defaultValue": "file",
-      "description": "Spark Reader Type."
-    },
-    {
-      "name": "ksoot.connector.reader.file-options.format",
+      "name": "ksoot.connector.file-options.format",
       "type": "java.lang.String",
       "defaultValue": "csv",
       "description": "Input file format. 'csv' or 'parquet'."
     },
     {
-      "name": "ksoot.connector.reader.file-options.header",
+      "name": "ksoot.connector.file-options.header",
       "type": "java.lang.Boolean",
       "defaultValue": true,
       "description": "Whether to consider first row as as header row in an input file. Column names would be the columns in Spark dataset."
     },
     {
-      "name": "ksoot.connector.reader.jdbc-options.url",
+      "name": "ksoot.connector.file-options.merge",
+      "type": "java.lang.String",
+      "defaultValue": "false",
+      "description": "Whether to merge output in single file."
+    },
+    {
+      "name": "ksoot.connector.file-options.path",
+      "type": "java.lang.String",
+      "defaultValue": "false",
+      "description": "Output path where output will be saved."
+    },
+    {
+      "name": "ksoot.connector.jdbc-options.url",
       "type": "java.lang.String",
       "defaultValue": "",
       "description": "Database url."
     },
     {
-      "name": "ksoot.connector.reader.jdbc-options.driver",
+      "name": "ksoot.connector.jdbc-options.driver",
       "type": "java.lang.String",
       "defaultValue": "org.postgresql.Driver",
       "description": "Database driver name."
     },
     {
-      "name": "ksoot.connector.reader.jdbc-options.database",
+      "name": "ksoot.connector.jdbc-options.database",
       "type": "java.lang.String",
       "defaultValue": "",
       "description": "Ingestion Database name."
     },
     {
-      "name": "ksoot.connector.reader.jdbc-options.username",
+      "name": "ksoot.connector.jdbc-options.username",
       "type": "java.lang.String",
       "defaultValue": "postgres",
       "description": "Database username."
     },
     {
-      "name": "ksoot.connector.reader.jdbc-options.password",
+      "name": "ksoot.connector.jdbc-options.password",
       "type": "java.lang.String",
       "defaultValue": "admin",
       "description": "Database password."
     },
     {
-      "name": "ksoot.connector.reader.mongo-options.url",
+      "name": "ksoot.connector.mongo-options.url",
       "type": "java.lang.String",
       "defaultValue": "mongodb://localhost:27017",
       "description": "MongoDB connection url."
     },
     {
-      "name": "ksoot.connector.reader.mongo-options.database",
+      "name": "ksoot.connector.mongo-options.database",
       "type": "java.lang.String",
       "defaultValue": "",
       "description": "MongoDB database name."
     },
     {
-      "name": "ksoot.connector.reader.arango-options.endpoints",
+      "name": "ksoot.connector.arango-options.endpoints",
       "type": "java.util.List<java.lang.String>",
-      "defaultValue": "",
+      "defaultValue": "localhost:8529",
       "description": "ArangoDB connection urls."
     },
     {
-      "name": "ksoot.connector.reader.arango-options.database",
+      "name": "ksoot.connector.arango-options.database",
       "type": "java.lang.String",
-      "defaultValue": "",
+      "defaultValue": "_system",
       "description": "ArangoDB database name."
     },
     {
-      "name": "ksoot.connector.reader.arango-options.username",
+      "name": "ksoot.connector.arango-options.username",
       "type": "java.lang.String",
-      "defaultValue": "",
+      "defaultValue": "root",
       "description": "ArangoDB username."
     },
     {
-      "name": "ksoot.connector.reader.arango-options.password",
+      "name": "ksoot.connector.arango-options.password",
       "type": "java.lang.String",
       "defaultValue": "",
       "description": "ArangoDB password."
     },
     {
-      "name": "ksoot.connector.reader.arango-options.sslEnabled",
+      "name": "ksoot.connector.arango-options.sslEnabled",
       "type": "java.lang.Boolean",
       "defaultValue": "",
       "description": "Whether to enable SSL."
     },
     {
-      "name": "ksoot.connector.reader.arango-options.sslCertValue",
+      "name": "ksoot.connector.arango-options.sslCertValue",
       "type": "java.lang.String",
       "defaultValue": "",
       "description": "Ssl cert value."
     },
     {
-      "name": "ksoot.connector.writer.type",
+      "name": "ksoot.connector.arango-options.cursor-ttl",
       "type": "java.lang.String",
-      "defaultValue": "file",
-      "description": "Where to write output, file or jdbc."
-    },
-    {
-      "name": "ksoot.connector.writer.checkpoint-location",
-      "type": "java.lang.String",
-      "defaultValue": "spark-space/checkpoints",
-      "description": "Checkpoint directory. Used only in case of Streaming Job."
-    },
-    {
-      "name": "ksoot.connector.writer.save-mode",
-      "type": "org.apache.spark.sql.SaveMode",
-      "defaultValue": "Overwrite",
-      "description": "Save mode for the output file, used in Batch job. Append, Overwrite, ErrorIfExists, Ignore."
-    },
-    {
-      "name": "ksoot.connector.writer.output-mode",
-      "type": "java.lang.String",
-      "defaultValue": "Append",
-      "description": "Specify what gets written to the output sink, used in Streaming job. Append, Complete, Update."
-    },
-    {
-      "name": "ksoot.connector.writer.file-options.format",
-      "type": "java.lang.String",
-      "defaultValue": "csv",
-      "description": "Out file format. 'csv' or 'parquet'."
-    },
-    {
-      "name": "ksoot.connector.writer.file-options.header",
-      "type": "java.lang.Boolean",
-      "defaultValue": true,
-      "description": "Whether to create header row in an output file. Column names would be the columns in Spark dataset."
-    },
-    {
-      "name": "ksoot.connector.writer.file-options.merge",
-      "type": "java.lang.Boolean",
-      "defaultValue": false,
-      "description": "Whether to merge output into single file."
-    },
-    {
-      "name": "ksoot.connector.writer.file-options.path",
-      "type": "java.lang.String",
-      "defaultValue": "spark-space/output",
-      "description": "Output file path."
-    },
-    {
-      "name": "ksoot.connector.writer.jdbc-options.url",
-      "type": "java.lang.String",
-      "defaultValue": "",
-      "description": "Database url."
-    },
-    {
-      "name": "ksoot.connector.writer.jdbc-options.driver",
-      "type": "java.lang.String",
-      "defaultValue": "org.postgresql.Driver",
-      "description": "Database driver name."
-    },
-    {
-      "name": "ksoot.connector.writer.jdbc-options.database",
-      "type": "java.lang.String",
-      "defaultValue": "",
-      "description": "Ejestion Database name."
-    },
-    {
-      "name": "ksoot.connector.writer.jdbc-options.username",
-      "type": "java.lang.String",
-      "defaultValue": "postgres",
-      "description": "Database username."
-    },
-    {
-      "name": "ksoot.connector.writer.jdbc-options.password",
-      "type": "java.lang.String",
-      "defaultValue": "admin",
-      "description": "Database password."
-    },
-    {
-      "name": "ksoot.connector.writer.mongo-options.url",
-      "type": "java.lang.String",
-      "defaultValue": "mongodb://localhost:27017",
-      "description": "MongoDB connection url."
-    },
-    {
-      "name": "ksoot.connector.writer.mongo-options.database",
-      "type": "java.lang.String",
-      "defaultValue": "",
-      "description": "MongoDB database name."
-    },
-    {
-      "name": "ksoot.connector.writer.arango-options.endpoints",
-      "type": "java.util.List<java.lang.String>",
-      "defaultValue": "",
-      "description": "ArangoDB connection urls."
-    },
-    {
-      "name": "ksoot.connector.writer.arango-options.database",
-      "type": "java.lang.String",
-      "defaultValue": "",
-      "description": "ArangoDB database name."
-    },
-    {
-      "name": "ksoot.connector.writer.arango-options.username",
-      "type": "java.lang.String",
-      "defaultValue": "",
-      "description": "ArangoDB username."
-    },
-    {
-      "name": "ksoot.connector.writer.arango-options.password",
-      "type": "java.lang.String",
-      "defaultValue": "",
-      "description": "ArangoDB password."
-    },
-    {
-      "name": "ksoot.connector.writer.arango-options.sslEnabled",
-      "type": "java.lang.Boolean",
-      "defaultValue": "",
-      "description": "Whether to enable SSL."
-    },
-    {
-      "name": "ksoot.connector.writer.arango-options.sslCertValue",
-      "type": "java.lang.String",
-      "defaultValue": "",
-      "description": "Ssl cert value."
-    },
-
+      "defaultValue": "PT30S",
+      "description": "Cursor ttl."
+    }
   ],
   "hints": [
     {
-      "name": "ksoot.connector.writer.file-options.format",
+      "name": "ksoot.connector.file-options.format",
       "values": [
         {
           "value": "csv",
@@ -239,20 +124,7 @@
       ]
     },
     {
-      "name": "ksoot.connector.reader.file-options.format",
-      "values": [
-        {
-          "value": "csv",
-          "description": "Output in csv format."
-        },
-        {
-          "value": "parquet",
-          "description": "Output in parquet format."
-        }
-      ]
-    },
-    {
-      "name": "ksoot.connector.writer.save-mode",
+      "name": "ksoot.connector.save-mode",
       "values": [
         {
           "value": "Append",
@@ -273,7 +145,7 @@
       ]
     },
     {
-      "name": "ksoot.connector.writer.output-mode",
+      "name": "ksoot.connector.output-mode",
       "values": [
         {
           "value": "Append",

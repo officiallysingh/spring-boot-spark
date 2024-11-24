@@ -62,17 +62,28 @@ ksoot:
 #  job:
 #    some-key: ${MODEL_SCHEMA_KEY}
   connector:
-    mongo:
-      url: ${MONGODB_URL:mongodb://localhost:27017}
-      database: ${MONGO_FEATURE_DB:sales_db}
-    arango:
-      endpoints: ${ARANGODB_URL:localhost:8529}
-      database: ${ARANGODB_DATABASE:products_db}
-      username: ${ARANGODB_USER:root}
-      password: ${ARANGODB_PASSWORD:admin}
+    mongo-options:
+      url: ${MONGO_URL:mongodb://localhost:27017}
+      database: ${MONGO_DATABASE:sales_db}
+    arango-options:
+      endpoints: ${ARANGO_URL:localhost:8529}
+      database: ${ARANGO_DATABASE:products_db}
+      username: ${ARANGO_USER:root}
+      password: ${ARANGO_PASSWORD:admin}
       ssl-enabled: false
       ssl-cert-value: ""
       cursor-ttl: PT5M # 5 minutes, see the ISO 8601 standard for java.time.Duration String patterns
+    jdbc-options:
+      url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/sales_db}
+      driver: ${POSTGRES_DRIVER:org.postgresql.Driver}
+      database: ${POSTGRES_FEATURE_DB:sales_db}
+      username: ${POSTGRES_USER:postgres}
+      password: ${POSTGRES_PASSWORD:admin}
+    file-options:
+      format: parquet
+      header: true
+      path: "spark-space/output"
+      merge: true
 
 #------------------------- Spark configurations -------------------------
 spark:

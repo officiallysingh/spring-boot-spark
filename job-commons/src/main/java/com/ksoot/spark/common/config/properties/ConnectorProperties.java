@@ -1,10 +1,13 @@
 package com.ksoot.spark.common.config.properties;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.spark.sql.SaveMode;
+import org.apache.spark.sql.streaming.OutputMode;
 import org.springframework.validation.annotation.Validated;
 
 @Getter
@@ -12,24 +15,40 @@ import org.springframework.validation.annotation.Validated;
 @NoArgsConstructor
 @ToString
 @Validated
-public abstract class ConnectorProperties {
+public class ConnectorProperties {
 
-  /** Connector type, where to write data. postgres or files */
-//  @NotNull protected ConnectorType type = ConnectorType.file;
+  @NotEmpty private String checkpointLocation = "spark-space/checkpoints";
 
-  protected JdbcOptions jdbcOptions = new JdbcOptions();
+  /**
+   * Save mode for the output file. Applicable only to Batch writers. Options are Append, Overwrite,
+   * ErrorIfExists, Ignore. Default: Overwrite
+   */
+  @NotNull private SaveMode saveMode = SaveMode.Overwrite;
 
-  protected MongoOptions mongoOptions = new MongoOptions();
+  /**
+   * Output mode for the output file. Applicable only to Stream writers. Options are Append,
+   * Complete, Update. Default: Append
+   */
+  @NotNull private String outputMode = "Append";
 
-  protected ArangoOptions arangoOptions = new ArangoOptions();
+  public OutputMode outputMode() {
+    return switch (this.outputMode) {
+      case "Append" -> OutputMode.Append();
+      case "Complete" -> OutputMode.Complete();
+      case "Update" -> OutputMode.Update();
+      default ->
+          throw new IllegalStateException(
+              "Unexpected 'mlhb.ejestion.output-mode' value: " + this.outputMode);
+    };
+  }
 
-  protected KafkaOptions kafkaOptions = new KafkaOptions();
+  private FileOptions fileOptions = new FileOptions();
 
-//  public enum ConnectorType {
-//    file,
-//    jdbc,
-//    mongo,
-//    arango,
-//    kafka;
-//  }
+  private JdbcOptions jdbcOptions = new JdbcOptions();
+
+  private MongoOptions mongoOptions = new MongoOptions();
+
+  private ArangoOptions arangoOptions = new ArangoOptions();
+
+  private KafkaOptions kafkaOptions = new KafkaOptions();
 }

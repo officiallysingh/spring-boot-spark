@@ -1,7 +1,6 @@
 package com.ksoot.spark.common.connector;
 
-import com.ksoot.spark.common.config.properties.ReaderProperties;
-import com.ksoot.spark.common.config.properties.WriterProperties;
+import com.ksoot.spark.common.config.properties.ConnectorProperties;
 import com.ksoot.spark.common.util.SparkOptions;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,18 +16,16 @@ public class JdbcConnector {
 
   protected final SparkSession sparkSession;
 
-  protected final ReaderProperties readerProperties;
-
-  protected final WriterProperties writerProperties;
+  protected final ConnectorProperties properties;
 
   public Dataset<Row> read(final String table) {
     Dataset<Row> dataFrame =
         this.sparkSession
             .read()
             .jdbc(
-                this.readerProperties.getJdbcOptions().getUrl(),
+                this.properties.getJdbcOptions().getUrl(),
                 table,
-                this.readerProperties.getJdbcOptions().options());
+                this.properties.getJdbcOptions().options());
     return dataFrame;
   }
 
@@ -38,42 +35,41 @@ public class JdbcConnector {
             .read()
             .schema(schema)
             .jdbc(
-                this.readerProperties.getJdbcOptions().getUrl(),
+                this.properties.getJdbcOptions().getUrl(),
                 table,
-                this.readerProperties.getJdbcOptions().options());
+                this.properties.getJdbcOptions().options());
     return dataFrame;
   }
 
   public void write(final Dataset<Row> dataset, final String table) {
     dataset
         .write()
-        .mode(this.writerProperties.getSaveMode())
+        .mode(this.properties.getSaveMode())
         .jdbc(
-            this.writerProperties.getJdbcOptions().getUrl(),
+            this.properties.getJdbcOptions().getUrl(),
             table,
-            this.writerProperties.getJdbcOptions().options());
+            this.properties.getJdbcOptions().options());
   }
 
   public DataStreamWriter<Row> writeStream(final Dataset<Row> dataset, final String table) {
     log.info(
         "Streaming data to database: {} table: {}",
-        this.writerProperties.getJdbcOptions().getDatabase(),
+        this.properties.getJdbcOptions().getDatabase(),
         table);
     // Write each micro-batch to PostgreSQL
     return dataset
         .writeStream()
-        .outputMode(this.writerProperties.outputMode())
+        .outputMode(this.properties.outputMode())
         .foreachBatch(
             (batchDataset, batchId) -> {
               batchDataset
                   .write()
-                  .mode(this.writerProperties.getSaveMode())
+                  .mode(this.properties.getSaveMode())
                   .jdbc(
-                      this.writerProperties.getJdbcOptions().getUrl(),
+                      this.properties.getJdbcOptions().getUrl(),
                       table,
-                      this.writerProperties.getJdbcOptions().options());
+                      this.properties.getJdbcOptions().options());
             })
-        .option(
-            SparkOptions.Common.CHECKPOINT_LOCATION, this.writerProperties.getCheckpointLocation());
+        .option(SparkOptions.Common.CHECKPOINT_LOCATION, this.properties.getCheckpointLocation());
   }
 }

@@ -1,7 +1,6 @@
 package com.ksoot.spark.common.connector;
 
-import com.ksoot.spark.common.config.properties.ReaderProperties;
-import com.ksoot.spark.common.config.properties.WriterProperties;
+import com.ksoot.spark.common.config.properties.ConnectorProperties;
 import com.ksoot.spark.common.util.SparkOptions;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,19 +17,18 @@ public class MongoConnector {
 
   protected final SparkSession sparkSession;
 
-  protected final ReaderProperties readerProperties;
-
-  protected final WriterProperties writerProperties;
+  protected final ConnectorProperties properties;
 
   public Dataset<Row> read(final String collection) {
     log.info(
         "Reading from MongoDB >> database: {}, collection: {}",
-        this.readerProperties.getMongoOptions().getDatabase(),
+        this.properties.getMongoOptions().getDatabase(),
         collection);
     Assert.hasText(collection, "MongoDB collection name required");
     return this.sparkSession
         .read()
-        .options(this.readerProperties.getMongoOptions().options(collection))
+        .format(SparkOptions.Mongo.FORMAT)
+        .options(this.properties.getMongoOptions().options(collection))
         .option(SparkOptions.Common.INFER_SCHEMA, true)
         .load();
   }
@@ -38,13 +36,14 @@ public class MongoConnector {
   public Dataset<Row> read(final String collection, final StructType schema) {
     log.info(
         "Reading from MongoDB >> database: {}, collection: {}",
-        this.readerProperties.getMongoOptions().getDatabase(),
+        this.properties.getMongoOptions().getDatabase(),
         collection);
     Assert.hasText(collection, "MongoDB collection name required");
     return this.sparkSession
         .read()
+        .format(SparkOptions.Mongo.FORMAT)
         .schema(schema)
-        .options(this.readerProperties.getMongoOptions().options(collection))
+        .options(this.properties.getMongoOptions().options(collection))
         .load();
   }
 
@@ -53,12 +52,13 @@ public class MongoConnector {
     Assert.hasText(aggregationPipeline, "MongoDB aggregationPipeline required");
     log.info(
         "Reading from MongoDB >> database: {}, collection: {}, aggregationPipeline: {}",
-        this.readerProperties.getMongoOptions().getDatabase(),
+        this.properties.getMongoOptions().getDatabase(),
         collection,
         aggregationPipeline);
     return this.sparkSession
         .read()
-        .options(this.readerProperties.getMongoOptions().options(collection))
+        .format(SparkOptions.Mongo.FORMAT)
+        .options(this.properties.getMongoOptions().options(collection))
         .option(SparkOptions.Common.INFER_SCHEMA, true)
         .option(SparkOptions.Mongo.AGGREGATION_PIPELINE, aggregationPipeline)
         .load();
@@ -70,13 +70,14 @@ public class MongoConnector {
     Assert.hasText(aggregationPipeline, "MongoDB aggregationPipeline required");
     log.info(
         "Reading from MongoDB >> database: {}, collection: {}, aggregationPipeline: {}",
-        this.readerProperties.getMongoOptions().getDatabase(),
+        this.properties.getMongoOptions().getDatabase(),
         collection,
         aggregationPipeline);
     return this.sparkSession
         .read()
+        .format(SparkOptions.Mongo.FORMAT)
         .schema(schema)
-        .options(this.readerProperties.getMongoOptions().options(collection))
+        .options(this.properties.getMongoOptions().options(collection))
         .option(SparkOptions.Mongo.AGGREGATION_PIPELINE, aggregationPipeline)
         .load();
   }
@@ -85,12 +86,13 @@ public class MongoConnector {
     Assert.hasText(collection, "MongoDB collection name required");
     log.info(
         "Writing to MongoDB >> database: {}, collection: {}",
-        this.writerProperties.getMongoOptions().getDatabase(),
+        this.properties.getMongoOptions().getDatabase(),
         collection);
     dataset
         .write()
-        .mode(this.writerProperties.getSaveMode())
-        .options(this.writerProperties.getMongoOptions().options(collection))
+        .format(SparkOptions.Mongo.FORMAT)
+        .mode(this.properties.getSaveMode())
+        .options(this.properties.getMongoOptions().options(collection))
         .save();
   }
 
@@ -98,13 +100,13 @@ public class MongoConnector {
     Assert.hasText(collection, "MongoDB collection name required");
     log.info(
         "Streaming to MongoDB >> database: {}, collection: {}",
-        this.writerProperties.getMongoOptions().getDatabase(),
+        this.properties.getMongoOptions().getDatabase(),
         collection);
     return dataset
         .writeStream()
-        .outputMode(this.writerProperties.outputMode())
-        .options(this.writerProperties.getMongoOptions().options(collection))
-        .option(
-            SparkOptions.Common.CHECKPOINT_LOCATION, this.writerProperties.getCheckpointLocation());
+        .format(SparkOptions.Mongo.FORMAT)
+        .outputMode(this.properties.outputMode())
+        .options(this.properties.getMongoOptions().options(collection))
+        .option(SparkOptions.Common.CHECKPOINT_LOCATION, this.properties.getCheckpointLocation());
   }
 }

@@ -15,7 +15,7 @@ import org.springframework.validation.annotation.Validated;
 @NoArgsConstructor
 @ToString
 @Validated
-public class WriteFileOptions {
+public class FileOptions {
 
   /** Output file format, csv or parquet. Default: csv */
   @NotEmpty private String format = "csv";

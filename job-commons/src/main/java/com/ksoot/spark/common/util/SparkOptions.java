@@ -19,7 +19,6 @@ public class SparkOptions {
     public static final String INFER_SCHEMA = "inferSchema";
     public static final String PATH = "path";
     public static final String FORMAT = "format";
-    public static final String FORMAT = "format";
     public static final String CHECKPOINT_LOCATION = "checkpointLocation";
   }
 

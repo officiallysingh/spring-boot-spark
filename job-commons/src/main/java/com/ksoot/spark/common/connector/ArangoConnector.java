@@ -2,8 +2,7 @@ package com.ksoot.spark.common.connector;
 
 import static org.apache.commons.lang3.StringUtils.*;
 
-import com.ksoot.spark.common.config.properties.ReaderProperties;
-import com.ksoot.spark.common.config.properties.WriterProperties;
+import com.ksoot.spark.common.config.properties.ConnectorProperties;
 import com.ksoot.spark.common.util.JobConstants;
 import com.ksoot.spark.common.util.SparkOptions;
 import com.ksoot.spark.common.util.StringUtils;
@@ -29,16 +28,14 @@ public class ArangoConnector {
 
   protected final SparkSession sparkSession;
 
-  protected final ReaderProperties readerProperties;
-
-  protected final WriterProperties writerProperties;
+  protected final ConnectorProperties properties;
 
   public Dataset<Row> readAll(final String collection) {
     log.info("Fetching Knowledge >> collection: {}", collection);
     Assert.hasText(collection, "ArangoDB collection name required");
     return this.sparkSession
         .read()
-        .options(this.readerProperties.getArangoOptions().options())
+        .options(this.properties.getArangoOptions().options())
         .option(SparkOptions.Arango.TABLE, collection)
         .option(SparkOptions.Common.INFER_SCHEMA, true)
         .load();
@@ -49,7 +46,7 @@ public class ArangoConnector {
     Assert.hasText(query, "ArangoDB query required");
     return this.sparkSession
         .read()
-        .options(this.readerProperties.getArangoOptions().options())
+        .options(this.properties.getArangoOptions().options())
         .option(SparkOptions.Arango.QUERY, query)
         .option(SparkOptions.Common.INFER_SCHEMA, true)
         .load();

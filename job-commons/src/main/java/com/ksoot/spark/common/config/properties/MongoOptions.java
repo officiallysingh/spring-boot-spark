@@ -16,15 +16,14 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class MongoOptions {
 
-  /** MongoDB URL to connect to, Default: mongodb://localhost:27017 */
+  /** MongoDB URL to connect to. Default: mongodb://localhost:27017 */
   @NotEmpty private String url = "mongodb://localhost:27017";
 
-  /** Features Database name, Default: sales_db */
+  /** Features Database name.*/
   @NotEmpty private String database;
 
   public Map<String, String> options(final String collection) {
     return Map.of(
-        SparkOptions.Common.FORMAT, SparkOptions.Mongo.FORMAT,
         SparkOptions.Mongo.READ_CONNECTION_URI, this.url,
         SparkOptions.Mongo.DATABASE, this.database,
         SparkOptions.Mongo.COLLECTION, collection);
