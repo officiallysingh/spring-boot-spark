@@ -19,7 +19,7 @@ public class MongoOptions {
   /** MongoDB URL to connect to. Default: mongodb://localhost:27017 */
   @NotEmpty private String url = "mongodb://localhost:27017";
 
-  /** Features Database name.*/
+  /** Features Database name. */
   @NotEmpty private String database;
 
   public Map<String, String> options(final String collection) {

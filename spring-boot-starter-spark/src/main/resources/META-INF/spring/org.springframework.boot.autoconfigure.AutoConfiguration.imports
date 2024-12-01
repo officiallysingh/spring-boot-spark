@@ -1,0 +1,2 @@
+com.ksoot.spark.springframework.boot.autoconfigure.SparkConfiguration
+com.ksoot.spark.springframework.boot.autoconfigure.SpringCloudTaskConfiguration

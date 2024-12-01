@@ -6,10 +6,6 @@ import com.ksoot.spark.common.connector.FileConnector;
 import com.ksoot.spark.common.connector.JdbcConnector;
 import com.ksoot.spark.common.connector.MongoConnector;
 import com.mongodb.spark.sql.connector.MongoCatalog;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.spark.sql.SparkSession;
@@ -20,7 +16,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
-import org.springframework.validation.annotation.Validated;
 
 @AutoConfiguration
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
