@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 @NoArgsConstructor
 @ToString
 @Validated
-@ConfigurationProperties(prefix = "ksoot.job")
+@ConfigurationProperties(prefix = "ksoot.job", ignoreInvalidFields = true)
 public class JobProperties {
 
   /** Unique correlation id for each Job execution. */

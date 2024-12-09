@@ -1,9 +1,6 @@
 package com.ksoot.spark.sales.conf;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.*;
 import java.time.YearMonth;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,14 +14,15 @@ import org.springframework.validation.annotation.Validated;
 @NoArgsConstructor
 @ToString
 @Validated
-@ConfigurationProperties(prefix = "ksoot.job")
+@ConfigurationProperties(prefix = "ksoot.job", ignoreInvalidFields = true)
 public class JobProperties {
 
   /** Statement month * */
   @NotNull @PastOrPresent private YearMonth month = YearMonth.now();
 
   /** Unique correlation id for each Job execution. */
-  @NotEmpty
-  @Max(50)
+  //  @NotEmpty
+  //  @Max(50)
+  @Size(min = 2, max = 50, message = "Correlation id should be between 2 and 50 characters")
   private String correlationId;
 }

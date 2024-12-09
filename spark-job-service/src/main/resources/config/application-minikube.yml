@@ -46,19 +46,13 @@ spark:
 
 #------------------------- Spark Submit Job configurations -------------------------
 spark-submit:
-  capture-job-logs: true
+  capture-jobs-logs: false
+  persist-jobs: true
   jobs:
-    spark-statement-job:
-      jar-file: local:///opt/spark/job-apps/spark-statement-job.jar
-      conf:
+    daily-sales-report-job:
+      jar-file: local:///opt/spark/job-apps/spark-batch-daily-sales-report-job.jar
+      spark-config:
         spark.kubernetes.namespace: default
-        spark.kubernetes.container.image: spark-statement-job:0.0.1
-        spark.kubernetes.authenticate.driver.serviceAccountName: spark
-        spark.kubernetes.driverEnv.SPARK_USER: spark
-    spark-word-count-job:
-      jar-file: local:///opt/spark/job-apps/spark-word-count-job.jar
-      conf:
-        spark.kubernetes.namespace: default
-        spark.kubernetes.container.image: spark-word-count-job:0.0.1
+        spark.kubernetes.container.image: spark-batch-daily-sales-report-job:0.0.1
         spark.kubernetes.authenticate.driver.serviceAccountName: spark
         spark.kubernetes.driverEnv.SPARK_USER: spark

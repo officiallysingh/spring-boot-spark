@@ -6,7 +6,6 @@ import com.ksoot.spark.conf.SparkSubmitProperties;
 import com.ksoot.spark.dto.JobSubmitRequest;
 import java.io.*;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -41,8 +40,11 @@ public class SparkSubmitter {
   private static final String DEPLOY_MODE = "spark.submit.deployMode";
   private static final String DEPLOY_MODE_CLIENT = "client";
 
+  //  private static final String SUBMIT_CMD_TEMPLATE =
+  //      "./bin/spark-submit --verbose --name ${" + JOB_NAME + "} --class ${" + MAIN_CLASS_NAME +
+  // "} ";
   private static final String SUBMIT_CMD_TEMPLATE =
-      "./bin/spark-submit --verbose --name ${" + JOB_NAME + "} --class ${" + MAIN_CLASS_NAME + "} ";
+      "./bin/spark-submit --verbose --class ${" + MAIN_CLASS_NAME + "} ";
   private static final String SUBMIT_CMD_CONF_TEMPLATE = "--conf ${confProperty}";
 
   private static final ExecutorService executor = Executors.newCachedThreadPool();
@@ -76,7 +78,10 @@ public class SparkSubmitter {
                             String.join(", ", this.sparkSubmitProperties.getJobs().keySet()))
                         .throwAble(HttpStatus.BAD_REQUEST));
     final Properties jobSparkConf =
-        this.confProperties(this.sparkProperties, sparkJobProperties.getSparkConfig());
+        this.confProperties(
+            this.sparkProperties,
+            sparkJobProperties.getSparkConfig(),
+            jobSubmitRequest.getSparkConfigs());
 
     final String baseCommand =
         this.substitute(
@@ -145,9 +150,13 @@ public class SparkSubmitter {
   }
 
   private Properties confProperties(
-      final Properties sparkProperties, final Properties sparkJobConfProperties) {
+      final Properties sparkCommonProperties,
+      final Properties sparkJobSpecificProperties,
+      final Map<String, Object> sparkRuntimeJobSpecificProperties) {
 
-    Properties confProperties = this.mergeProperties(sparkProperties, sparkJobConfProperties);
+    Properties confProperties =
+        this.mergeProperties(
+            sparkCommonProperties, sparkJobSpecificProperties, sparkRuntimeJobSpecificProperties);
 
     if (!confProperties.containsKey(DEPLOY_MODE)) {
       log.warn(DEPLOY_MODE + " not specified, falling back to: " + DEPLOY_MODE_CLIENT);
@@ -167,68 +176,84 @@ public class SparkSubmitter {
   // Merge common properties with job-specific properties, giving precedence to job-specific
   // properties
   private Properties mergeProperties(
-      final Properties sparkProperties, final Properties sparkJobConfProperties) {
+      final Properties sparkCommonProperties,
+      final Properties sparkJobSpecificProperties,
+      final Map<String, Object> sparkRuntimeJobSpecificProperties) {
     final Properties confProperties = new Properties();
-    confProperties.putAll(sparkProperties);
-    confProperties.putAll(sparkJobConfProperties);
-    // Override/merge extraJavaOptions and add prefix -D to correctly pass them to spark submit
-    // command.
-    if (sparkProperties.containsKey(SPARK_DRIVER_EXTRA_JAVA_OPTIONS)
-        && sparkJobConfProperties.containsKey(SPARK_DRIVER_EXTRA_JAVA_OPTIONS)) {
-      final String defaultDriverExtraJavaOptions =
-          sparkProperties.getProperty(SPARK_DRIVER_EXTRA_JAVA_OPTIONS);
-      final String jobSpecificDriverExtraJavaOptions =
-          sparkJobConfProperties.getProperty(SPARK_DRIVER_EXTRA_JAVA_OPTIONS);
-      final Map<String, String> defaultDriverExtraJavaOptionsMap =
-          Arrays.stream(defaultDriverExtraJavaOptions.split(" "))
-              .map(pair -> pair.split("=", 2)) // Split each pair into key and value
-              .collect(
-                  Collectors.toMap(
-                      keyValue -> keyValue[0].trim(), // Key
-                      keyValue ->
-                          keyValue.length > 1
-                              ? keyValue[1].trim()
-                              : "" // Value or empty string if no value
-                      ));
-      final Map<String, String> jobSpecificDriverExtraJavaOptionsMap =
-          Arrays.stream(jobSpecificDriverExtraJavaOptions.split(" "))
-              .map(keyValue -> keyValue.split("=", 2)) // Split each pair into key and value
-              .collect(
-                  Collectors.toMap(
-                      keyValue -> keyValue[0].trim(), // Key
-                      keyValue ->
-                          keyValue.length > 1
-                              ? keyValue[1].trim()
-                              : "" // Value or empty string if no value
-                      ));
-      defaultDriverExtraJavaOptionsMap.putAll(jobSpecificDriverExtraJavaOptionsMap);
-
-      final String driverExtraJavaOptions =
-          defaultDriverExtraJavaOptionsMap.entrySet().stream()
-              .filter(entry -> StringUtils.isNotBlank(entry.getValue()))
-              .map(entry -> entry.getKey().trim() + "=" + entry.getValue().trim())
-              .collect(Collectors.joining(" "));
-      confProperties.put(SPARK_DRIVER_EXTRA_JAVA_OPTIONS, driverExtraJavaOptions);
-    }
-
-    if (confProperties.containsKey(SPARK_DRIVER_EXTRA_JAVA_OPTIONS)) {
-      final String driverExtraJavaOptions =
-          Arrays.stream(confProperties.getProperty(SPARK_DRIVER_EXTRA_JAVA_OPTIONS).split(" "))
-              .filter(
-                  vmOption ->
-                      vmOption.contains("=")
-                          && !vmOption.split("=", 2)[1].isBlank()) // Filter non-blank values
-              .map(
-                  vmOption ->
-                      vmOption.startsWith(VM_OPTION_PREFIX)
-                          ? vmOption
-                          : VM_OPTION_PREFIX + vmOption) // Add -D prefix
-              .collect(Collectors.joining(" ")); // Join with space
-      confProperties.put(SPARK_DRIVER_EXTRA_JAVA_OPTIONS, driverExtraJavaOptions);
-    }
-
+    // Overriding properties with low precedence by that with high precedence.
+    confProperties.putAll(sparkCommonProperties);
+    confProperties.putAll(sparkJobSpecificProperties);
+    confProperties.putAll(sparkRuntimeJobSpecificProperties);
     return confProperties;
   }
+
+  //  // Merge common properties with job-specific properties, giving precedence to job-specific
+  //  // properties
+  //  private Properties mergeProperties(
+  //      final Properties sparkCommonProperties, final Properties sparkJobSpecificProperties, final
+  // Map<String, Object> sparkRuntimeJobSpecificProperties) {
+  //    final Properties confProperties = new Properties();
+  //    confProperties.putAll(sparkCommonProperties);
+  //    confProperties.putAll(sparkJobSpecificProperties);
+  //    confProperties.putAll(sparkRuntimeJobSpecificProperties);
+  //    // Override/merge extraJavaOptions and add prefix -D to correctly pass them to spark submit
+  //    // command.
+  //    if (sparkCommonProperties.containsKey(SPARK_DRIVER_EXTRA_JAVA_OPTIONS)
+  //        && sparkJobSpecificProperties.containsKey(SPARK_DRIVER_EXTRA_JAVA_OPTIONS)) {
+  //      final String defaultDriverExtraJavaOptions =
+  //          sparkCommonProperties.getProperty(SPARK_DRIVER_EXTRA_JAVA_OPTIONS);
+  //      final String jobSpecificDriverExtraJavaOptions =
+  //          sparkJobSpecificProperties.getProperty(SPARK_DRIVER_EXTRA_JAVA_OPTIONS);
+  //      final Map<String, String> defaultDriverExtraJavaOptionsMap =
+  //          Arrays.stream(defaultDriverExtraJavaOptions.split(" "))
+  //              .map(pair -> pair.split("=", 2)) // Split each pair into key and value
+  //              .collect(
+  //                  Collectors.toMap(
+  //                      keyValue -> keyValue[0].trim(), // Key
+  //                      keyValue ->
+  //                          keyValue.length > 1
+  //                              ? keyValue[1].trim()
+  //                              : "" // Value or empty string if no value
+  //                      ));
+  //      final Map<String, String> jobSpecificDriverExtraJavaOptionsMap =
+  //          Arrays.stream(jobSpecificDriverExtraJavaOptions.split(" "))
+  //              .map(keyValue -> keyValue.split("=", 2)) // Split each pair into key and value
+  //              .collect(
+  //                  Collectors.toMap(
+  //                      keyValue -> keyValue[0].trim(), // Key
+  //                      keyValue ->
+  //                          keyValue.length > 1
+  //                              ? keyValue[1].trim()
+  //                              : "" // Value or empty string if no value
+  //                      ));
+  //      defaultDriverExtraJavaOptionsMap.putAll(jobSpecificDriverExtraJavaOptionsMap);
+  //
+  //      final String driverExtraJavaOptions =
+  //          defaultDriverExtraJavaOptionsMap.entrySet().stream()
+  //              .filter(entry -> StringUtils.isNotBlank(entry.getValue()))
+  //              .map(entry -> entry.getKey().trim() + "=" + entry.getValue().trim())
+  //              .collect(Collectors.joining(" "));
+  //      confProperties.put(SPARK_DRIVER_EXTRA_JAVA_OPTIONS, driverExtraJavaOptions);
+  //    }
+  //
+  //    if (confProperties.containsKey(SPARK_DRIVER_EXTRA_JAVA_OPTIONS)) {
+  //      final String driverExtraJavaOptions =
+  //          Arrays.stream(confProperties.getProperty(SPARK_DRIVER_EXTRA_JAVA_OPTIONS).split(" "))
+  //              .filter(
+  //                  vmOption ->
+  //                      vmOption.contains("=")
+  //                          && !vmOption.split("=", 2)[1].isBlank()) // Filter non-blank values
+  //              .map(
+  //                  vmOption ->
+  //                      vmOption.startsWith(VM_OPTION_PREFIX)
+  //                          ? vmOption
+  //                          : VM_OPTION_PREFIX + vmOption) // Add -D prefix
+  //              .collect(Collectors.joining(" ")); // Join with space
+  //      confProperties.put(SPARK_DRIVER_EXTRA_JAVA_OPTIONS, driverExtraJavaOptions);
+  //    }
+  //
+  //    return confProperties;
+  //  }
 
   private String getConfCommand(
       final Properties jobSpecificSparkConf, final JobSubmitRequest jobSubmitRequest) {
@@ -275,7 +300,12 @@ public class SparkSubmitter {
             + VM_OPTION_PREFIX
             + CORRELATION_ID
             + "="
-            + jobSubmitRequest.correlationId())
+            + jobSubmitRequest.getCorrelationId()
+            + " "
+            + VM_OPTION_PREFIX
+            + "PERSIST_JOB"
+            + "="
+            + this.sparkSubmitProperties.isPersistJobs())
         .trim();
   }
 

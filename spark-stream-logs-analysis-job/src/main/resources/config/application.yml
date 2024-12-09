@@ -20,7 +20,7 @@ spring:
       enabled: false
   cloud:
     task:
-      initialize-enabled: {ksoot.job.persist:false}
+      initialize-enabled: ${ksoot.job.persist:false}
   main:
     log-startup-info: true
   #------------------------- Database configuration -------------------------
@@ -67,7 +67,7 @@ ksoot:
   job:
 #    month: ${STATEMENT_MONTH:}
     correlation-id: ${spring.cloud.task.external-execution-id:daily-sales-report-job-execution-1}
-    persist: false
+    persist: ${PERSIST_JOB:false}
   connector:
     mongo-options:
       url: ${MONGO_URL:mongodb://localhost:27017}

@@ -37,7 +37,8 @@ spark:
 #------------------------- Spark Submit Job configurations -------------------------
 spark-submit:
 #  spark-home: ${SPARK_HOME}
-  capture-job-logs: true
+  capture-jobs-logs: true
+  persist-jobs: true
   jobs:
     daily-sales-report-job:
       jar-file: ${M2_REPO}/com/ksoot/spark/spark-batch-daily-sales-report-job/0.0.1-SNAPSHOT/spark-batch-daily-sales-report-job-0.0.1-SNAPSHOT.jar
@@ -47,9 +48,9 @@ spark-submit:
         spark.kubernetes.container.image:
         spark.kubernetes.authenticate.driver.serviceAccountName:
         spark.kubernetes.driverEnv.SPARK_USER:
-    spark-word-count-job:
-      main-class-name: com.ksoot.spark.wordcount.SparkWordCountJob
-      jar-file: ${M2_REPO}/com/ksoot/spark/spark-word-count-job/0.0.1-SNAPSHOT/spark-word-count-job-0.0.1-SNAPSHOT.jar
+    spark-example:
+      main-class-name: org.apache.spark.examples.SparkPi
+      jar-file: ${SPARK_HOME}/examples/jars/spark-examples_2.12-3.5.3.jar
       #      Unsetting following properties as not required in local profile
       spark-config:
         spark.kubernetes.namespace:

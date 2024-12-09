@@ -52,7 +52,7 @@ public class FileConnector {
         .mode(this.properties.getSaveMode())
         .format(this.properties.getFileOptions().getFormat())
         .options(this.properties.getFileOptions().writeOptions())
-        .save(this.properties.getFileOptions().getPath());
+        .save();
   }
 
   public void write(final Dataset<Row> dataset, final Map<String, String> options) {
@@ -71,7 +71,7 @@ public class FileConnector {
         .format(this.properties.getFileOptions().getFormat())
         .options(this.properties.getFileOptions().writeOptions())
         .options(options)
-        .save(this.properties.getFileOptions().getPath());
+        .save();
   }
 
   public DataStreamWriter<Row> writeStream(

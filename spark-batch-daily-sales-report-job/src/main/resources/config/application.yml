@@ -20,7 +20,7 @@ spring:
       enabled: false
   cloud:
     task:
-      initialize-enabled: {ksoot.job.persist:false}
+      initialize-enabled: ${ksoot.job.persist:false}
   main:
     log-startup-info: true
   #------------------------- Database configuration -------------------------
@@ -30,8 +30,8 @@ spring:
     password: ${POSTGRES_PASSWORD:admin}
     hikari:
       pool-name: pg-connection-pool
-      maximum-pool-size: 128
-      minimum-idle: 16
+      maximum-pool-size: 32
+      minimum-idle: 8
   jpa:
 #    defer-datasource-initialization: true
     hibernate:
@@ -82,7 +82,7 @@ ksoot:
   job:
     month: ${STATEMENT_MONTH:}
     correlation-id: ${spring.cloud.task.external-execution-id:daily-sales-report-job-execution-1}
-    persist: false
+    persist: ${PERSIST_JOB:false}
   connector:
     mongo-options:
       url: ${MONGO_URL:mongodb://localhost:27017}
@@ -96,11 +96,11 @@ ksoot:
       ssl-cert-value: ""
       cursor-ttl: PT5M # 5 minutes, see the ISO 8601 standard for java.time.Duration String patterns
     jdbc-options:
-      url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/sales_db}
-      driver: ${POSTGRES_DRIVER:org.postgresql.Driver}
-      database: ${POSTGRES_FEATURE_DB:sales_db}
-      username: ${POSTGRES_USER:postgres}
-      password: ${POSTGRES_PASSWORD:admin}
+      url: ${JDBC_URL:jdbc:postgresql://localhost:5432}
+      driver: ${JDBC_DRIVER:org.postgresql.Driver}
+      database: ${JDBC_DB:logs_db}
+      username: ${JDBC_USER:postgres}
+      password: ${JDBC_PASSWORD:admin}
     file-options:
       format: parquet
       header: true

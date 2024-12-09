@@ -1,5 +1,6 @@
 package com.ksoot.spark.conf;
 
+import com.ksoot.spark.util.pagination.PaginatedResourceAssembler;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -12,6 +13,8 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertySource;
+import org.springframework.data.web.HateoasPageableHandlerMethodArgumentResolver;
+import org.springframework.lang.Nullable;
 
 @Configuration
 @EnableConfigurationProperties(SparkSubmitProperties.class)
@@ -46,5 +49,11 @@ class SparkJobServiceConfiguration {
     } else {
       return new Properties();
     }
+  }
+
+  @Bean
+  PaginatedResourceAssembler paginatedResourceAssembler(
+      @Nullable final HateoasPageableHandlerMethodArgumentResolver resolver) {
+    return new PaginatedResourceAssembler(resolver);
   }
 }

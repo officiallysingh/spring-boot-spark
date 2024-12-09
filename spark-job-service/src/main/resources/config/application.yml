@@ -26,7 +26,7 @@ spring:
     pathmatch:
       matching-strategy: ant-path-matcher
     problemdetails:
-      enabled: true
+      enabled: false
   messages:
     basename: messages,i18n/problems
     use-code-as-default-message: true
@@ -121,12 +121,9 @@ spark:
   driver:
     memory: 2g
     cores: 2
-    extraJavaOptions: >
-      -DMONGODB_URL=${MONGODB_URL:mongodb://localhost:27017}
-      -DMONGO_FEATURE_DB=${MONGO_FEATURE_DB:feature-repo}
-      -DSPARK_OUTPUT_PATH=${SPARK_OUTPUT_PATH:gs://fetch-bucket/spark-output}
-      -DSTATEMENT_JOB_IMAGE=${PRE_PROCESSOR_JOB_IMAGE:spark-statement-job:0.0.1}
-      -DWORD_COUNT_JOB_IMAGE=${WORD_COUNT_JOB_IMAGE:spark-word-count-job:0.0.1}
+#    extraJavaOptions: >
+#      -DMONGODB_URL=${MONGODB_URL:mongodb://localhost:27017}
+#      -DMONGO_FEATURE_DB=${MONGO_FEATURE_DB:feature-repo}
   kubernetes:
     namespace: spark
     authenticate.driver.serviceAccountName: spark
@@ -146,8 +143,3 @@ spark-submit:
       jar-file: local:///opt/spark/job-apps/spark-batch-daily-sales-report-job.jar
       spark-config:
         spark.kubernetes.container.image: ${DAILY_SALES_REPORT_JOB_IMAGE:daily-sales-report-job:0.0.1}
-    spark-word-count-job:
-      main-class-name: com.ksoot.spark.wordcount.SparkWordCountJob
-      jar-file: local:///opt/spark/job-apps/spark-word-count-job.jar
-      spark-config:
-        spark.kubernetes.container.image: ${WORD_COUNT_JOB_IMAGE:spark-word-count-job:0.0.1}
